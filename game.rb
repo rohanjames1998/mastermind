@@ -60,22 +60,27 @@ class Game
 
     include GameFunctions
 
+
     @@colors = ['green', 'blue','red', 'yellow', 'purple', 'orange', 'black', 'white']
     @@rounds = 0
     def initialize
         @code = @@colors.shuffle[0..3]
     end
 
-    attr_reader :code, :guess
-
+    
     def round
         loop do
-        @@rounds += 1
-        player_input = get_player_response
-        generate_feedback(player_input)
-        break if end_game?(player_input, @@rounds) == true
+            @@rounds += 1
+            player_input = get_player_response
+            generate_feedback(player_input)
+            break if end_game?(player_input, @@rounds) == true
         end
     end
+
+    protected
+    
+    attr_reader :code
+
 end
 
 
