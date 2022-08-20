@@ -81,9 +81,25 @@ class Game
         loop do
         make_or_break = gets.downcase
         if make_or_break.include?('break')
+        puts  "\nIn this game 4 colors will be randomly selected from the list of colors given below.",
+"Green, Blue, Red, Yellow, Purple, Orange, Black, White",
+"You will get 12 guesses to guess the colors in correct order"
+"Good Luck!!!\n"
             @code = @@colors.shuffle[0..3]
         player_guess_round
         elsif make_or_break.include?('make')
+          puts "\nYou have chosen to make the code",
+              "The computer will get 12 guesses to crack your code",
+              "After each guess you have to give appropriate responses to the computer about the guess",
+              "You can format your response as so:",
+              "Correct, Wrong, Wrong, Incorrect place",
+              "Correct means the color is in its correct place",
+              "Wrong means the color doesn't exist in the code",
+              "Incorrect place means the color exists in the code but is not in the correct place",
+              "Please separate each response with commas like shown above",
+              "Good luck!"
+
+
             @code = get_player_code(@@colors)
         else
             puts "Please enter a valid response (Your response should include 'Make' or 'Break')"
@@ -114,10 +130,7 @@ end
 # GAME
 #-------------------------------------#
 puts "Hello and welcome to mastermind!",
-"In this game 4 colors will be randomly selected from the list of colors given below.",
-"Green, Blue, Red, Yellow, Purple, Orange, Black, White",
-"You will get 12 guesses to guess the colors in correct order"
-"Good Luck!!!\n"
+    "Do you want to break the code? Or make the code?"
 new_game = Game.new
 new_game.round
 
