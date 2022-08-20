@@ -38,6 +38,18 @@ module GameFunctions
         puts comp_response.join
     end
 
+    def end_game?(player_input, rounds)
+        if player_input == code
+           puts "\nCongratulations!, You just cracked the code!"
+           return true
+        end
+        if rounds == 12
+          puts  "\nSorry you are out of guesses",
+            "The code was: #{code}",
+            "Better Luck Next Time"
+            return true
+        end
+    end
 
 end
 
@@ -57,9 +69,12 @@ class Game
     attr_reader :code, :guess
 
     def round
+        loop do
         @@rounds += 1
         player_input = get_player_response
         generate_feedback(player_input)
+        break if end_game?(player_input, @@rounds) == true
+        end
     end
 end
 
