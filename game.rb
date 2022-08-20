@@ -26,12 +26,12 @@ module GameFunctions
                 reply = 'Correct!, '
                 comp_response << reply
                 next
-            when code.include(input)
+            when code.include?(input)
                 reply = 'Incorrect place, '
                 comp_response << reply
                 next
             else
-                reply = 'Try again, '
+                reply = 'Wrong Color, '
                 comp_response << reply
             end
         end
@@ -46,20 +46,17 @@ end
 #-------------------------------------#
 class Game
 
-    extend GameFunctions
+    include GameFunctions
 
     @@colors = ['green', 'blue','red', 'yellow', 'purple', 'orange', 'black', 'white']
     @@rounds = 0
     def initialize
         @code = @@colors.shuffle[0..3]
-# binding.pry
-
-        Game.round
     end
 
     attr_reader :code, :guess
 
-    def self.round
+    def round
         @@rounds += 1
         player_input = get_player_response
         generate_feedback(player_input)
@@ -75,5 +72,6 @@ puts "Hello and welcome to mastermind!",
 "Green, Blue, Red, Yellow, Purple, Orange, Black, White",
 "You will get 12 guesses to guess the colors in correct order"
 "Good Luck!!!"
-Game.new
+new_game = Game.new
+new_game.round
 
