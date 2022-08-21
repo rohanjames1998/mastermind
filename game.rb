@@ -52,8 +52,8 @@ module GameFunctions
 
      def get_player_code(color_array)
         loop do
-        code = gets.chomp.downcase.split(',')
-        # binding.pry
+					# We need to remove whitespace in order to correctly compare
+        code = gets.chomp.downcase.gsub(/\s+/, '').split(',')
         if code.all? {|ele| color_array.include?(ele)}
             return code
         else
@@ -75,13 +75,13 @@ module GameFunctions
     end
 
     def get_player_feedback
-        possible_feedbacks = ['wrong', 'correct', 'incorrect place']
+        possible_feedbacks = ['wrong', 'correct', 'incorrectplace']
 
         #Checking for commas
         loop do
             index = 0
             correct_response_indicator =  0
-      feedback = gets.chomp.downcase
+      feedback = gets.chomp.gsub(/\s+/, '').downcase
       if feedback.include?(',')
         feedback = feedback.split(',')
       else
@@ -89,14 +89,12 @@ module GameFunctions
         next
 			end
         #Getting the feedback and checking it it contains specified responses
-        possible_feedbacks.each do |f|
-            if feedback[index] == f
+        feedback.each do |f|
+            if possible_feedbacks.include?(f)
                 correct_response_indicator += 1
-								index += 1
-						else
-							index += 1
 						end
-      end
+						# binding.pry
+      		end
 			if correct_response_indicator == 4
 				return feedback
 			else
@@ -129,6 +127,7 @@ class Game
 "Good Luck!!!\n"
             @code = @@colors.shuffle[0...4]
         player_guess_round
+				break
 
 				# Make scenarios
         elsif make_or_break.include?('make')
@@ -146,6 +145,8 @@ class Game
 
 
             @code = get_player_code(@@colors)
+						get_player_feedback
+						break
         else
             puts "Please enter a valid response (Your response should include 'Make' or 'Break')"
         end
@@ -183,5 +184,4 @@ end
 puts "Hello and welcome to mastermind!",
     "Do you want to break the code? Or make the code?"
 new_game = Game.new
-new_game.round
 
