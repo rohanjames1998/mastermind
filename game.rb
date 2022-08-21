@@ -54,7 +54,7 @@ module GameFunctions
         loop do
 					# We need to remove whitespace in order to correctly compare
         code = gets.chomp.downcase.gsub(/\s+/, '').split(',')
-        if code.all? {|ele| color_array.include?(ele)}
+        if code.all? {|ele| color_array.include?(ele)} && code.length == 4
             return code
         else
             puts "\nPlease enter a valid 4 color code separated by commas.",
@@ -145,7 +145,7 @@ class Game
 
 
             @code = get_player_code(@@colors)
-						get_player_feedback
+						#get_comp_guess
 						break
         else
             puts "Please enter a valid response (Your response should include 'Make' or 'Break')"
