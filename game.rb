@@ -73,9 +73,10 @@ module GameFunctions
 			rest_colors = colors[4...8]
       loop do
 				# Since guess is an array we need to process it before displaying it on console
+        @@rounds += 1
 				display_comp_guess(guess)
         player_feedback = get_player_feedback
-				break if player_feedback.all?('correct') || player_feedback == 'you win'
+				break if player_feedback.all?('correct') || player_feedback == 'you win' || @@rounds == 12
 
         #Since we are shuffling incorrectly placed colors we need to separate the loop for wrong and incorrectly placed
         #colors. Else we will delete wrong colors and shuffle wrong colors.
@@ -107,6 +108,17 @@ module GameFunctions
 					end
 				end
 			end
+      make_end_screen(@@rounds)
+    end
+
+    def make_end_screen(rounds)
+      if rounds == 12
+        puts "The computer, after #{rounds} couldn't break your code.",
+        "Congratulations, you have won the game!!."
+      else
+        puts "It took computer #{rounds} tries to break your code."
+            "Better luck next time."
+      end
     end
 
 		def display_comp_guess(guess)
