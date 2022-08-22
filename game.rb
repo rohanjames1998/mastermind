@@ -134,13 +134,22 @@ module GameFunctions
 		end
 
     def get_player_feedback
-        possible_feedbacks = ['wrong', 'correct', 'incorrectplace']
+        possible_feedbacks = ['wrong', 'w', 'correct', 'c', 'incorrectplace', 'ic', 'help', 'mycode']
 
         #Checking for commas
         loop do
-            index = 0
             correct_response_indicator =  0
       feedback = gets.chomp.gsub(/\s+/, '').downcase
+      feedback.each_with_index  do |f, i|
+        case f
+        when 'help'
+          guidelines
+          feedback.delete_at(i)
+        when 'mycode'
+          puts @@code
+          feedbacks.delete_at(i)
+        end
+      end
       if feedback.include?(',')
         feedback = feedback.split(',')
       else
@@ -152,7 +161,7 @@ module GameFunctions
             if possible_feedbacks.include?(f)
                 correct_response_indicator += 1
 						end
-						# binding.pry
+
       		end
 			if correct_response_indicator == 4
 				return feedback
@@ -162,6 +171,17 @@ module GameFunctions
     end
 	end
 end
+
+def guidelines
+  puts "\n-----FEEDBACK GUIDE-----",
+  "\n1. You can format your response as so:",
+  "\nCorrect, Wrong, Wrong, Incorrect place",
+  "\nOR you can also abbreviate your responses like:"
+  "\n C, W, W, IC"
+  "\na) Correct/C means the color is in its correct place",
+  "b)Wrong/W means the color doesn't exist in the code",
+  "c)Incorrect place/IC means the color exists in the code but is not in the correct place",
+  "d)Please separate each response with commas like shown above"
 end
 
 #-------------------------------------#
@@ -194,12 +214,14 @@ class Game
               "The computer will get 12 guesses to crack your code",
               "After each guess you have to give appropriate responses to the computer about the guess",
               "\n-----FEEDBACK GUIDE-----",
-              "\nYou can format your response as so:",
+              "\n1. You can format your response as so:",
               "\nCorrect, Wrong, Wrong, Incorrect place",
-              "\nCorrect means the color is in its correct place",
-              "Wrong means the color doesn't exist in the code",
-              "Incorrect place means the color exists in the code but is not in the correct place",
-              "Please separate each response with commas like shown above",
+              "\nOR you can also abbreviate your responses like:"
+              "\n C, W, W, IC"
+              "\na) Correct/C means the color is in its correct place",
+              "b)Wrong/W means the color doesn't exist in the code",
+              "c)Incorrect place/IC means the color exists in the code but is not in the correct place",
+              "d)Please separate each response with commas like shown above",
               "\n Please enter your code below"
 
 
