@@ -66,13 +66,60 @@ module GameFunctions
     end
 
     def comp_guess(colors)
+			#We first get a random guess for computer then we separate them into two parts one will be guess and other
+			#we will use to exchange incorrectly placed colors
       colors.shuffle!
       guess = colors[0...4]
-      puts guess
+			rest_colors = colors[4...8]
       loop do
+				# Since guess is an array we need to process it before displaying it on console
+				display_comp_guess(guess)
         player_feedback = get_player_feedback
-      end
+				break if player_feedback.all?('correct') || player_feedback == 'you win'
+
+        #Since we are shuffling incorrectly placed colors we need to separate the loop for wrong and incorrectly placed
+        #colors. Else we will delete wrong colors and shuffle wrong colors.
+				player_feedback.each_with_index do |f, i|
+						#Since feedbacks correspond to array we can use its indices to mutate our guess array
+						#If the color  is wrong we delete it
+					if f == 'wrong'
+						guess.delete_at(i)
+						# Then we insert a color from rest of the colors we discarded earlier
+            new_color = rest_colors.delete_at(0)
+						guess.insert(i, new_color)
+          end
+        end
+						# If color is at incorrect place we generate a random index number then place the color there
+						# If the color there is correct then we generate a new index number for color placement
+            player_feedback.each_with_index do |f, i|
+					if f == 'incorrectplace'
+						loop do
+							random_index = rand(4)
+							# binding.pry
+							if player_feedback[random_index] == 'correct' || random_index == i
+								next
+							else
+                misplaced_color = guess.delete_at(i)
+								guess.insert(random_index, misplaced_color)
+                break
+							end
+						end
+					end
+				end
+			end
     end
+
+		def display_comp_guess(guess)
+			display_guess = ''
+			guess.map do |color|
+				unless color == guess[guess.length - 1]
+					color += ','
+					color += ' '
+				end
+				display_guess += color
+			end
+			puts "\nComputer guess is", display_guess
+		end
 
     def get_player_feedback
         possible_feedbacks = ['wrong', 'correct', 'incorrectplace']
@@ -145,7 +192,7 @@ class Game
 
 
             @code = get_player_code(@@colors)
-						#get_comp_guess
+						comp_guess(@@colors)
 						break
         else
             puts "Please enter a valid response (Your response should include 'Make' or 'Break')"
