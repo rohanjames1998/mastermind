@@ -4,6 +4,9 @@ require 'pry-byebug'
 # MODULES
 #-------------------------------------#
 module GameFunctions
+  #------------------------------------------#
+  #  FOR WHEN PLAYER CHOOSES TO BREAK THE CODE
+  #------------------------------------------#
   def get_player_response
     loop do
       input = gets.downcase
@@ -48,6 +51,9 @@ module GameFunctions
       return true
     end
   end
+  #------------------------------------------#
+  # FOR WHEN PLAYER CHOOSES TO MAKE THE CODE
+  #------------------------------------------#
 
   def get_player_code(color_array)
     loop do
@@ -134,20 +140,20 @@ module GameFunctions
   end
 
   def get_player_feedback
-    possible_feedbacks = ['wrong', 'w', 'correct', 'c', 'incorrectplace', 'ic', 'help', 'mycode']
+    possible_feedbacks = ['wrong', 'w', 'correct', 'c', 'incorrectplace', 'ic', 'help', 'code']
 
     # Checking for commas
     loop do
       correct_response_indicator = 0
       feedback = gets.chomp.gsub(/\s+/, '').downcase
-        case
-        when feedback =='help'
-          guidelines
-          feedback = feedback = gets.chomp.gsub(/\s+/, '').downcase
-        # when feedback =='code'
-        #   puts @@code
-        #   feedback = feedback = gets.chomp.gsub(/\s+/, '').downcase
-        end
+      case
+      when feedback == 'help'
+        guidelines
+        feedback = feedback = gets.chomp.gsub(/\s+/, '').downcase
+      when feedback == 'code'
+        display_player_code
+        feedback = feedback = gets.chomp.gsub(/\s+/, '').downcase
+      end
 
       if feedback.include?(',')
         feedback = feedback.split(',')
@@ -170,90 +176,104 @@ module GameFunctions
     end
   end
 
+  def display_player_code
+    display_code = ''
+    @code.each do |code|
+      unless code == @code[@code.length - 1]
+        code += ','
+        code += ' '
+      end
+      display_code += code
+    end
+    puts display_code
+  end
+
   def guidelines
     puts "\n-----FEEDBACK GUIDE-----",
          "\n1. You can format your response as so:",
          "\nCorrect, Wrong, Wrong, Incorrect place",
          "\nOR you can also abbreviate your responses like:",
          "\n C, W, W, IC",
-         "\na) Correct/C means the color is in its correct place",
+         "\na)Correct/C means the color is in its correct place",
          "b)Wrong/W means the color doesn't exist in the code",
          "c)Incorrect place/IC means the color exists in the code but is not in the correct place",
          "d)Please separate each response with commas like shown above",
-         "In order to view this guide type in 'help' in the command line"
+         "e)If you want to see your code just type in 'code'",
+         "f)In order to view this guide type in 'help' in the command line"
   end
 end
 
-  #-------------------------------------#
-  # CLASSES
-  #-------------------------------------#
-  class Game
-    include GameFunctions
+#-------------------------------------#
+# CLASSES
+#-------------------------------------#
+class Game
+  include GameFunctions
 
-    @@colors = ['green', 'blue', 'red', 'yellow', 'purple', 'orange', 'black', 'white']
-    @@rounds = 0
-    def initialize
-      loop do
-        make_or_break = gets.downcase
+  @@colors = ['green', 'blue', 'red', 'yellow', 'purple', 'orange', 'black', 'white']
+  @@rounds = 0
+  def initialize
+    loop do
+      make_or_break = gets.downcase
 
-        # Break scenarios
-        if make_or_break.include?('break')
-          puts  "\nIn this game 4 colors will be randomly selected from the list of colors given below.",
-                "Green, Blue, Red, Yellow, Purple, Orange, Black, White",
-                "You will get 12 guesses to guess the colors in correct order"
-          "Good Luck!!!\n"
-          @code = @@colors.shuffle[0...4]
-          player_guess_round
-          break
+      # Break scenarios
+      if make_or_break.include?('break')
+        puts  "\nIn this game 4 colors will be randomly selected from the list of colors given below.",
+              "Green, Blue, Red, Yellow, Purple, Orange, Black, White",
+              "You will get 12 guesses to guess the colors in correct order"
+        "Good Luck!!!\n"
+        @code = @@colors.shuffle[0...4]
+        player_guess_round
+        break
 
-        # Make scenarios
-        elsif make_or_break.include?('make')
-          puts "\nYou have chosen to make the code",
-               "The computer will get 12 guesses to crack your code",
-               "After each guess you have to give appropriate responses to the computer about the guess",
-               "\n-----FEEDBACK GUIDE-----",
-               "\n1. You can format your response as so:",
-               "\nCorrect, Wrong, Wrong, Incorrect place",
-               "\nOR you can also abbreviate your responses like:",
-               "\n C, W, W, IC",
-               "\na) Correct/C means the color is in its correct place",
-               "b)Wrong/W means the color doesn't exist in the code",
-               "c)Incorrect place/IC means the color exists in the code but is not in the correct place",
-               "d)Please separate each response with commas like shown above",
-               "\n Please enter your code below"
+      # Make scenarios
+      elsif make_or_break.include?('make')
+        puts "\nYou have chosen to make the code",
+             "The computer will get 12 guesses to crack your code",
+             "After each guess you have to give appropriate responses to the computer about the guess",
+             "\n-----FEEDBACK GUIDE-----",
+             "\n1. You can format your response as so:",
+             "\nCorrect, Wrong, Wrong, Incorrect place",
+             "\nOR you can also abbreviate your responses like:",
+             "\n C, W, W, IC",
+             "\na)Correct/C means the color is in its correct place",
+             "b)Wrong/W means the color doesn't exist in the code",
+             "c)Incorrect place/IC means the color exists in the code but is not in the correct place",
+             "d)Please separate each response with commas like shown above",
+             "e)If you want to see your code just type in 'code'",
+             "\n Please enter your code below"
 
-          @code = get_player_code(@@colors)
-          comp_guess(@@colors)
-          break
-        else
-          puts "Please enter a valid response (Your response should include 'Make' or 'Break')"
-        end
+        @code = get_player_code(@@colors)
+        comp_guess(@@colors)
+        break
+      else
+        puts "Please enter a valid response (Your response should include 'Make' or 'Break')"
       end
     end
-
-    def player_guess_round
-      loop do
-        @@rounds += 1
-        player_input = get_player_response
-        generate_comp_feedback(player_input)
-        break if end_game?(player_input, @@rounds) == true
-      end
-    end
-
-    def comp_guess_round
-      loop do
-        rounds += 1
-        comp_input = comp_guess
-      end
-    end
-
-    protected
-
-    attr_reader :code
   end
-  #-------------------------------------#
-  # GAME
-  #-------------------------------------#
-  puts "Hello and welcome to mastermind!",
-       "Do you want to break the code? Or make the code?"
-  new_game = Game.new
+
+  def player_guess_round
+    loop do
+      @@rounds += 1
+      player_input = get_player_response
+      generate_comp_feedback(player_input)
+      break if end_game?(player_input, @@rounds) == true
+    end
+  end
+
+  def comp_guess_round
+    loop do
+      rounds += 1
+      comp_input = comp_guess
+    end
+  end
+
+  protected
+
+  attr_reader :code
+end
+#-------------------------------------#
+# GAME
+#-------------------------------------#
+puts "Hello and welcome to mastermind!",
+     "Do you want to break the code? Or make the code?"
+new_game = Game.new
