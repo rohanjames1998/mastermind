@@ -136,7 +136,7 @@ module GameFunctions
       end
       display_guess += color
     end
-    puts "\nComputer guess is", display_guess
+    puts "\nComputer guess is: #{display_guess}"
   end
 
   def get_player_feedback
@@ -203,6 +203,20 @@ module GameFunctions
   end
 end
 
+def retry_game
+  loop do
+  puts "Wanna play again?? [y/n]:"
+  reply = gets.chomp.downcase
+  if reply ==  'y'
+    new_game = Game.new
+  elsif reply == 'n'
+    break
+  else
+    puts 'Please enter a valid response [y/n]'
+    next
+  end
+end
+end
 #-------------------------------------#
 # CLASSES
 #-------------------------------------#
@@ -213,6 +227,8 @@ class Game
   @@rounds = 0
   def initialize
     loop do
+      puts "Hello and welcome to mastermind!",
+     "Do you want to break the code? Or make the code?"
       make_or_break = gets.downcase
 
       # Break scenarios
@@ -274,6 +290,7 @@ end
 #-------------------------------------#
 # GAME
 #-------------------------------------#
-puts "Hello and welcome to mastermind!",
-     "Do you want to break the code? Or make the code?"
+
+
 new_game = Game.new
+retry_game
